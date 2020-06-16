@@ -1,13 +1,23 @@
 <template>
   <div id="app">
+    <m-header></m-header>
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
     </div>
+
     <router-view/>
   </div>
 </template>
 
+<script>
+import MHeader from '@/components/header'
+export default {
+  components: {
+    MHeader
+  }
+}
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
