@@ -1,20 +1,18 @@
 <template>
   <div id="app">
     <m-header></m-header>
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-
-    <router-view/>
+    <v-nav></v-nav>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 import MHeader from '@/components/header'
+import VNav from '@/components/nav'
 export default {
   components: {
-    MHeader
+    MHeader,
+    VNav
   }
 }
 </script>
