@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Recommend from '@/components/recommend'
 import Singer from '@/components/singer'
+import SingerDetail from '@/components/singer/components/singerDetail'
 
 Vue.use(VueRouter)
 
@@ -24,7 +25,13 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: Singer
+    component: Singer,
+    children: [
+      {
+        path: ':id',
+        component: SingerDetail
+      }
+    ]
   }
 ]
 

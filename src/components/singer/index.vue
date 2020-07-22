@@ -1,6 +1,14 @@
 <template>
   <div class="app">
-    <Scroll v-if="singers.length" :data="singers" class="scroll" ref="scrollView">
+    <Scroll
+      v-if="singers.length"
+      :data="singers"
+      class="scroll"
+      ref="scrollView"
+      :probeType="probeType"
+      :listenScroll="listenScroll"
+      @scroll="scroll"
+    >
       <ul ref="singerUl">
         <li class="li-box" v-for="(item1, index) in singers" :key="index" ref="listView">
           <h2 class="title">{{index}}</h2>
@@ -22,7 +30,12 @@
           </ul>
         </li>
       </ul>
-      <!-- <h2 id="fixed" class="title">A</h2> -->
+      <h2
+        id="fixed"
+        class="title"
+        :style="{transform:`translateY(${tittransform}px)`}"
+        v-show="fixshow"
+      >{{activeIndex}}</h2>
     </Scroll>
     <div class="tab-right">
       <ul ref="indexViewList">
@@ -30,15 +43,16 @@
           :data-index="index"
           v-for="(item, index) in singers"
           :key="index"
+          :class="{curren:index===activeIndex}"
           @touchstart.stop.prevent="toTouchScroll(index)"
           @touchmove.stop.prevent="(e)=>toTouchMove(e,index)"
         >{{ litter[index]}}</li>
       </ul>
     </div>
     <!-- 歌手详情子路由 -->
-    <!-- <transition name="fade">
+    <transition name="fade">
       <router-view></router-view>
-    </transition>-->
+    </transition>
     <!-- loading -->
     <div class="loading" v-show="singers.length === 0?1:0">
       <loading></loading>
@@ -58,17 +72,23 @@ export default {
   data () {
     return {
       singers: [],
-      litter: 'ABCDEFGHIKLMNOPQRSTUVWXYZ'
+      litter: 'ABCDEFGHIKLMNOPQRSTUVWXYZ',
+      scrollY: -1,
+      activeIndex: 0,
+      fixshow: false,
+      tittransform: 0
     }
   },
   created () {
     this.getSingerList()
+    this.listenScroll = true
+    this.probeType = 3
+    this.hightY = []
   },
   methods: {
     getSingerList () {
       getSingerList().then(res => {
         this.singers = res
-        console.log(res)
       })
     },
     toTouchScroll (index) {
@@ -80,10 +100,52 @@ export default {
         e.touches[0].pageX,
         e.touches[0].pageY
       )
-      if (this.$refs.indexViewList.contains(hoverEl) && this.litter[hoverEl.dataset.index] !== this.hoverindex) {
-        this.hoverindex = this.litter[hoverEl.dataset.index]
-        this.$refs.scrollView.scrollToElement(this.$refs.listView[hoverEl.dataset.index], 0)
+      if (
+        this.$refs.indexViewList.contains(hoverEl) &&
+        this.litter[hoverEl.dataset.index] !== this.hoverindex
+      ) {
+        this.$refs.scrollView.scrollToElement(
+          this.$refs.listView[hoverEl.dataset.index],
+          0
+        )
       }
+    },
+    initHeight () {
+      this.hightY[0] = 0
+      let h = 0;
+      [].slice.call(this.$refs.listView).forEach(item => {
+        this.hightY.push((h += item.offsetHeight))
+      })
+    },
+    scroll (pos) {
+      for (let i = 0; i < this.hightY.length - 1; i++) {
+        if (
+          pos.y <= 0 &&
+          Math.abs(pos.y) >= this.hightY[i] &&
+          Math.abs(pos.y) < this.hightY[i + 1]
+        ) {
+          if (this.hightY[i + 1] - Math.abs(pos.y) <= 12) {
+            this.tittransform = this.hightY[i + 1] - Math.abs(pos.y) - 12
+          } else {
+            this.tittransform = 0
+          }
+          this.activeIndex = i
+          this.fixshow = true
+          return
+        }
+      }
+      this.fixshow = false
+    },
+    toSingerDetail (item) {
+      this.$router.push(`/singer/${item.Fsinger_mid}`)
+    }
+  },
+  computed: {},
+  watch: {
+    singers () {
+      this.$nextTick(() => {
+        this.initHeight()
+      })
     }
   }
 }
@@ -176,5 +238,8 @@ img {
   width: 100%;
   top: 50%;
   transform: translateY(-50%);
+}
+.curren {
+  color: red !important;
 }
 </style>
