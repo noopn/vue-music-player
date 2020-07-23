@@ -5,11 +5,12 @@
   </div>
 </template>
 
-<script type="text/ecmascript-6">
+<script type="text">
 // import { mapGetters } from 'vuex'
 import { getSingerDetail } from '@/api/singer'
 import { ERR_OK } from '@/api/config'
 import { createSong } from '@/assets/js/song'
+import { mapGetters } from 'vuex'
 // import musicList from '@/base/musicList/musicList'
 export default {
   components: {
@@ -30,9 +31,13 @@ export default {
     }
   },
   created () {
-    this._getDetail()
+    // this._getDetail()
+    console.log(this.singer())
   },
   methods: {
+    ...mapGetters([
+      'singer'
+    ]),
     _getDetail () {
       var that = this
       if (!this.singer.id) {
