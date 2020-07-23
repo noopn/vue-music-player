@@ -22,8 +22,8 @@ export default {
     },
     bgImage () {
       return this.singer.img
-    }
-    // ...mapGetters(['singer'])
+    },
+    ...mapGetters(['singer'])
   },
   data () {
     return {
@@ -31,25 +31,21 @@ export default {
     }
   },
   created () {
-    // this._getDetail()
-    console.log(this.singer())
+    this._getDetail()
   },
   methods: {
-    ...mapGetters([
-      'singer'
-    ]),
     _getDetail () {
-      var that = this
-      if (!this.singer.id) {
-        this.$router.go(-1)
+      console.log(this)
+      if (!this.singer.Fsinger_mid) {
+        this.$router.push('/singer')
         return
       }
       // 使用singer.mid作为拼接url的请求路径
-      getSingerDetail(that.singer.mid).then(res => {
+      getSingerDetail(this.singer.Fsinger_mid).then(res => {
         if (res.code === ERR_OK) {
           // 调用_normalizeSongs进行数据的封装处理
           this.songs = this._normalizeSongs(res.data.list)
-          // console.log(this.songs);
+          console.log(this.songs)
         }
       })
     },

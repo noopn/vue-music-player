@@ -38,9 +38,10 @@ export function createSong (musicData) { // 是对歌手详情页数据的封装
     name: musicData.songname,
     album: musicData.albumname,
     duration: musicData.interval,
-    image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`
+    image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
     // url: `http://ws.stream.qqmusic.qq.com/${musicData.songid}.m4a?fromtag=46`
     // url: `http://dl.stream.qqmusic.qq.com/C400${musicData.songmid}.m4a?vkey=&guid=1472133172&uin=0&fromtag=66`
+    url: 'https://ws.stream.qqmusic.qq.com/C400001WcRs73TNaWp.m4a?guid=7842965224&vkey=84CC7BAB30EB5A09424C9DC7F1C4725FDC35F5DCABCA3F9AF793CD89527FC2DED9C1747A51AB3977D5E9E6D9974DC1B5FD2FA0764AD6EC17&uin=6275&fromtag=66'
   })
 }
 
