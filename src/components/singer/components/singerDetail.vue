@@ -1,28 +1,27 @@
 <template>
   <div class="app">
-    wef
-    <!-- <musicList :title="title" :bg-image="bgImage" :songs="songs"></musicList> -->
+    <musicList :title="title" :bg-image="bgImage" :songs="songs"></musicList>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-// import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 import { getSingerDetail } from '@/api/singer'
 import { ERR_OK } from '@/api/config'
 import { createSong } from '@/assets/js/song'
-// import musicList from '@/base/musicList/musicList'
+import musicList from '@/common/musicList/musicList'
 export default {
   components: {
-    // musicList
+    musicList
   },
   computed: {
+    ...mapGetters(['singer']),
     title () {
       return this.singer.name
     },
     bgImage () {
       return this.singer.img
     }
-    // ...mapGetters(['singer'])
   },
   data () {
     return {
@@ -35,7 +34,7 @@ export default {
   methods: {
     _getDetail () {
       var that = this
-      if (!this.singer.id) {
+      if (!this.singer.Fsinger_mid) {
         this.$router.go(-1)
         return
       }
