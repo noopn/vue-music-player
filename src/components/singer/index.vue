@@ -62,6 +62,7 @@
 
 <script>
 import { getSingerList } from '@/api/singer'
+import { mapMutations } from 'vuex'
 import Scroll from '@/common/scroll'
 import Loading from '@/common/loading'
 export default {
@@ -138,7 +139,11 @@ export default {
     },
     toSingerDetail (item) {
       this.$router.push(`/singer/${item.Fsinger_mid}`)
-    }
+      this.setSinger(item)
+    },
+    ...mapMutations({
+      setSinger: 'SET_SINGER'
+    })
   },
   computed: {},
   watch: {

@@ -4,11 +4,12 @@
   </div>
 </template>
 
-<script type="text/ecmascript-6">
-import { mapGetters } from 'vuex'
+<script type="text">
+// import { mapGetters } from 'vuex'
 import { getSingerDetail } from '@/api/singer'
 import { ERR_OK } from '@/api/config'
 import { createSong } from '@/assets/js/song'
+import { mapGetters } from 'vuex'
 import musicList from '@/common/musicList/musicList'
 export default {
   components: {
@@ -21,7 +22,8 @@ export default {
     },
     bgImage () {
       return this.singer.img
-    }
+    },
+    ...mapGetters(['singer'])
   },
   data () {
     return {
@@ -33,17 +35,17 @@ export default {
   },
   methods: {
     _getDetail () {
-      var that = this
+      console.log(this)
       if (!this.singer.Fsinger_mid) {
-        this.$router.go(-1)
+        this.$router.push('/singer')
         return
       }
       // 使用singer.mid作为拼接url的请求路径
-      getSingerDetail(that.singer.mid).then(res => {
+      getSingerDetail(this.singer.Fsinger_mid).then(res => {
         if (res.code === ERR_OK) {
           // 调用_normalizeSongs进行数据的封装处理
           this.songs = this._normalizeSongs(res.data.list)
-          // console.log(this.songs);
+          console.log(this.songs)
         }
       })
     },
