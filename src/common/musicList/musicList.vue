@@ -10,20 +10,20 @@
       <div class="filter" ref="filter"></div>
     </div>
     <Scroll :data="songs" class="scroll" ref="scroll">
-      <!-- <SongList @select="selectItem" @scrollRefresh="scrollRefresh" :songs="songs" :rank="rank"></SongList> -->
+      <SongList @select="selectItem" @scrollRefresh="scrollRefresh" :songs="songs" :rank="rank"></SongList>
     </Scroll>
   </div>
 </template>
 
 <script>
-// import SongList from '@/base/songList/songList'
+import SongList from '@/common/songList/songList'
 import Scroll from '@/common/scroll'
 import { mapActions } from 'vuex'
 // import { getLyric, getVkey } from "api/song";
 // import { ERR_OK } from "api/config";
 export default {
   components: {
-    // SongList,
+    SongList,
     Scroll
   },
   props: {
@@ -81,6 +81,7 @@ export default {
     //   });
     // },
     selectItem (item, index) {
+      console.log(item, index)
       this.index = index
       this.item = item
       this.addMapActions(this.item, this.index)

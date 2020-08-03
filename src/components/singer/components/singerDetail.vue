@@ -21,7 +21,9 @@ export default {
       return this.singer.name
     },
     bgImage () {
-      return this.singer.img
+      return `https://y.gtimg.cn/music/photo_new/T001R300x300M000${
+                  this.singer.Fsinger_mid
+                }.jpg?max_age=2592000`
     },
     ...mapGetters(['singer'])
   },
