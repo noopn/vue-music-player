@@ -7,26 +7,17 @@
           <h1 v-html="title"></h1>
         </div>
       </div>
-      <div class="filter" ref="filter">
-        <img :src="bgImage" alt=""
-          class="filter-img"
-        />
-      </div>
+      <div class="filter" ref="filter"></div>
     </div>
     <Scroll :data="songs" class="scroll" ref="scroll">
-      <SongList
-        @select="selectItem"
-        @scrollRefresh="scrollRefresh"
-        :songs="songs"
-        :rank="rank"
-      ></SongList>
+      <SongList @select="selectItem" @scrollRefresh="scrollRefresh" :songs="songs" :rank="rank"></SongList>
     </Scroll>
   </div>
 </template>
 
-<script type="text/ecmascript-6">
-import SongList from '@/base/songList/songList'
-import Scroll from '@/base/scroll/scroll'
+<script>
+import SongList from '@/common/songList/songList'
+import Scroll from '@/common/scroll'
 import { mapActions } from 'vuex'
 // import { getLyric, getVkey } from "api/song";
 // import { ERR_OK } from "api/config";
@@ -52,9 +43,6 @@ export default {
       type: Boolean,
       default: false
     }
-  },
-  mounted () {
-    console.log(this.$props)
   },
   data () {
     return {
@@ -161,13 +149,6 @@ export default {
   width: 100%;
   height: 100%;
   background: rgba(7, 17, 27, 0.4);
-}
-.filter-img{
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
 }
 .scroll {
   width: 100%;

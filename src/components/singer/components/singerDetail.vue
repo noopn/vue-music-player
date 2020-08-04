@@ -16,6 +16,7 @@ export default {
     musicList
   },
   computed: {
+    ...mapGetters(['singer']),
     title () {
       return this.singer.Fsinger_name
     },
