@@ -139,6 +139,7 @@ export default {
     },
     toSingerDetail (item) {
       this.$router.push(`/singer/${item.Fsinger_mid}`)
+      console.log(item)
       this.setSinger(item)
     },
     ...mapMutations({
