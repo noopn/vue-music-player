@@ -18,7 +18,7 @@
 <script>
 import SongList from '@/common/songList/songList'
 import Scroll from '@/common/scroll'
-import { mapActions } from 'vuex'
+import { mapMutations } from 'vuex'
 // import { getLyric, getVkey } from "api/song";
 // import { ERR_OK } from "api/config";
 export default {
@@ -83,18 +83,14 @@ export default {
     selectItem (item, index) {
       this.index = index
       this.item = item
-      this.addMapActions(this.item, this.index)
-      // this._getLyric();
-    },
-    addMapActions (item, index) {
-      var that = this
-      this.selectPlay({
-        list: that.songs,
-        index: index
-        // vkey: that.vkey
+      this.setPlayList({
+        playList: this.songs,
+        currentIndex: index
       })
     },
-    ...mapActions(['selectPlay'])
+    ...mapMutations({
+      setPlayList: 'SET_PLAYLIST'
+    })
   },
   computed: {
     bgStyle () {

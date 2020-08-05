@@ -3,16 +3,20 @@
     <m-header></m-header>
     <v-nav></v-nav>
     <router-view></router-view>
+    <player />
   </div>
 </template>
 
 <script>
 import MHeader from '@/components/header'
 import VNav from '@/components/nav'
+import Player from '@/components/player'
+
 export default {
   components: {
     MHeader,
-    VNav
+    VNav,
+    Player
   }
 }
 </script>
