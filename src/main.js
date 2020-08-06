@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import 'babel-polyfill'
 import VueLazyload from 'vue-lazyload'
+import '@/assets/js/amfe-flexible'
 import '@/assets/css/reset.css'
 import App from './App.vue'
 import router from './router'

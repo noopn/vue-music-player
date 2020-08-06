@@ -4,12 +4,17 @@ const matutations = {
   [types.SET_SINGER] (state, singer) {
     state.singer = singer
   },
-  [types.SET_PLAYLIST] (state, { playList, currentIndex }) {
+  [types.SELECT_PLAY] (state, { playList, currentIndex, fullScreen }) {
     state.playList = playList
     state.currentIndex = currentIndex
+    state.fullScreen = fullScreen
   },
   [types.SET_FULL_SCREEN] (state, fullScreen) {
     state.fullScreen = fullScreen
+  },
+  [types.SET_PLAYING_STATE] (state, playing) {
+    console.log(playing)
+    state.playing = playing
   }
 }
 

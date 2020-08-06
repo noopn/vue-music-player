@@ -83,13 +83,15 @@ export default {
     selectItem (item, index) {
       this.index = index
       this.item = item
-      this.setPlayList({
+      this.selectPlay({
         playList: this.songs,
-        currentIndex: index
+        currentIndex: index,
+        fullScreen: true
       })
     },
     ...mapMutations({
-      setPlayList: 'SET_PLAYLIST'
+      fullScreen: 'SET_FULL_SCREEN',
+      selectPlay: 'SELECT_PLAY'
     })
   },
   computed: {

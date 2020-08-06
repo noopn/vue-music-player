@@ -41,7 +41,7 @@ export function createSong (musicData) { // 是对歌手详情页数据的封装
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
     // url: `http://ws.stream.qqmusic.qq.com/${musicData.songid}.m4a?fromtag=46`
     // url: `http://dl.stream.qqmusic.qq.com/C400${musicData.songmid}.m4a?vkey=&guid=1472133172&uin=0&fromtag=66`
-    url: 'https://ws.stream.qqmusic.qq.com/C400001WcRs73TNaWp.m4a?guid=7842965224&vkey=84CC7BAB30EB5A09424C9DC7F1C4725FDC35F5DCABCA3F9AF793CD89527FC2DED9C1747A51AB3977D5E9E6D9974DC1B5FD2FA0764AD6EC17&uin=6275&fromtag=66'
+    url: 'https://isure.stream.qqmusic.qq.com/C400002r03ci2ubtmn.m4a?guid=7842965224&vkey=766A13AC8E79BA190F6675411FC827D65F740B13C0E7073B5C3D3391C1D02DEC5213CE8BD57D8C7DDCAA7357CA4CF9C4CF907CDA8A72DE5B&uin=0&fromtag=66'
   })
 }
 

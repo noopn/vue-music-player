@@ -1,7 +1,7 @@
 <template>
   <div class="player" v-show="playList.length>0">
     <!-- 全屏播放器 -->
-    <!-- <transition name="normal"> -->
+    <transition name="normal">
       <div class="normal-player" v-show="fullScreen">
         <div class="normal-bg">
           <img :src="currentSong.image" alt />
@@ -10,16 +10,14 @@
           <img src="./toDown.png" alt="收回" title="收回" @click="toDown" />
           <h1 v-html="currentSong.name"></h1>
         </div>
-        <!-- <h1 class="title-singer" v-html="currentSong.singer"></h1> -->
+        <h1 class="title-singer" v-html="currentSong.singer"></h1>
         <!-- 旋转大头像 -->
-        <!-- <div
-          class="middle"
-          @touchstart.prevent="middleTouchStart"
+        <!-- @touchstart.prevent="middleTouchStart"
           @touchmove.prevent="middleTouchMove"
-          @touchend="middleTouchEnd"
-        >
-          <img :class="playImg" :src="currentSong.image" alt />
-          <p :class="playImgTxt" class="cd-lyric">{{playingLyric}}</p>
+        @touchend="middleTouchEnd"-->
+        <div class="middle">
+          <img :class="playImg" :src="currentSong.image" alt ref="playImg" />
+          <!-- <p :class="playImgTxt" class="cd-lyric">{{playingLyric}}</p>
           <scroll
             class="middle-r middleTime"
             ref="lyricList"
@@ -36,13 +34,13 @@
                 >{{line.txt}}</p>
               </div>
             </div>
-          </scroll>
-        </div> -->
+          </scroll>-->
+        </div>
         <!-- 歌词旋转图像轮播 -->
         <!-- <div class="dot-wrapper">
           <span class="dot" :class="{'active':currentShow==='cd'}"></span>
           <span class="dot" :class="{'active':currentShow==='lyric'}"></span>
-        </div> -->
+        </div>-->
         <!-- 播放进度条 -->
         <!-- <div class="time-box">
           <div class="time">
@@ -50,58 +48,62 @@
             <progressBar style="overflow:hidden" :percent="percent" @percentChange="percentChange"></progressBar>
             <span class="time-r">{{ format(currentSong.duration) }}</span>
           </div>
-        </div> -->
+        </div>-->
         <!-- 控制按钮栏 -->
-        <!-- <div class="bottom-button-box">
-          <span @click="changeMode">
+        <div class="bottom-button-box">
+          <span>
             <img v-if="mode === 2" src="./btnImg/random.png" alt />
             <img v-if="mode === 0" src="./btnImg/sequence.png" alt />
             <img v-if="mode === 1" src="./btnImg/loop.png" alt />
           </span>
-          <span @click="prev">
+          <span>
             <img src="./btnImg/prve.png" alt />
           </span>
           <span @click="togglePlaying">
             <img v-if="playing" id="playButton" src="./playStrop.png" alt />
             <img v-if="!playing" id="playButton" src="./playButton.png" alt />
           </span>
-          <span @click="next">
+          <span>
             <img src="./btnImg/next.png" alt />
           </span>
-          <span @click="toggleFavoriteList(currentSong)">
-            <img v-if="getFavoriteListCollect(currentSong)" src="./btnImg/collect.png" alt="收藏" />
-            <img v-else src="./btnImg/collect2.png" alt="收藏" />
+          <span>
+            <img src="./btnImg/collect.png" alt="收藏" />
+            <!-- <img v-else src="./btnImg/collect2.png" alt="收藏" /> -->
           </span>
-        </div> -->
+        </div>
         <!-- 音乐播放器 -->
-        <!-- <audio
-          ref="audio"
-          @canplay="audioReady"
+        <!-- @canplay="audioReady"
           @error="audioError"
           @timeupdate="timeUpdate"
-          @ended="songEnd"
-        ></audio> -->
+        @ended="songEnd"-->
+        <audio ref="audio" :src="currentSong.url" />
       </div>
-    <!-- </transition> -->
+    </transition>
+
     <!-- 收回的迷你播放器 -->
-    <!-- <div class="mini-player" v-show="!fullScreen" @click="toUp">
+    <div class="mini-player" v-show="!fullScreen" @click="toUp">
       <div class="mini-player-con">
-        <img :class="playing? 'playSrart' : 'playStorp'" :src="currentSong.image" alt />
+        <img
+          :class="playing? 'playSrart' : 'playStorp'"
+          :src="currentSong.image"
+          alt
+          ref="songImage"
+        />
         <p>
           <span class="mini-title" v-html="currentSong.name"></span>
           <span class="mini-name" v-html="currentSong.singer"></span>
         </p>
         <div class="playButton-box">
-          <span @click.stop="togglePlaying" class="playButton">
-            <img v-if="playing" src="./playStrop.png" alt />
-            <img v-if="!playing" src="./playButton.png" alt />
+          <span class="playButton" @click.stop="togglePlaying">
+            <img src="./playStrop.png" v-if="playing" alt />
+            <img src="./playButton.png" v-if="!playing" alt />
           </span>
-          <span class="playList" @click.stop="playListClick">
+          <span class="playList">
             <img src="./playList.png" alt="播放按钮" title="播放" />
           </span>
         </div>
       </div>
-    </div> -->
+    </div>
     <!-- 查看播放歌曲列表 -->
     <!-- <playList ref="playList"></playList> -->
   </div>
@@ -166,9 +168,6 @@ export default {
     this.touch = {}
     console.log(this.playList)
   },
-  mounted () {
-    // this._songUrl();
-  },
   methods: {
     // 收藏显示
     getFavoriteListCollect (song) {
@@ -200,9 +199,10 @@ export default {
     /* 播放按钮点击 */
     togglePlaying () {
       // 停止/播放当前歌词播放
-      if (this.currentLyric) {
-        this.currentLyric.togglePlay()
-      }
+      // if (this.currentLyric) {
+      //   this.currentLyric.togglePlay()
+      // }
+      console.log(this.playing, !this.playing)
       this.setPlayingState(!this.playing)
     },
     toDown () {
@@ -423,40 +423,42 @@ export default {
       'saveFavoriteList',
       'deleteFavoriteList'
     ])
+  },
+  watch: {
+    // vkey: function (val, oldVal) {
+    //   this.songUrlData = songUrl(val, this.currentSong.mid)
+    //   console.log(this.songUrlData)
+    //   this.songPlay()
+    //   // console.log(this.currentSong.mid)
+    // },
+    // 检测当前播放歌曲变化
+    currentSong (newSong, oldSong) {
+      // if (!newSong.id) {
+      //   // 当清空播放列表时，newSong为空，则直接跳过下面操作
+      //   return
+      // }
+      // if (newSong === oldSong) {
+      //   // 当currentSong播放列表因为点击播放方式改变时，不做操作
+      //   return
+      // }
+      // 清除当前歌词自动跳转计时
+      // if (this.currentLyric) {
+      //   this.currentLyric.stop()
+      // }
+      this.$nextTick(() => {
+        this.setPlayingState(true)
+        this.$refs.audio.play()
+        // this._getVkey(this.currentSong.mid)
+      })
+    },
+    // 检测播放状态
+    playing (val) {
+      this.$nextTick(() => {
+        const audio = this.$refs.audio
+        val ? audio.play() : audio.pause()
+      })
+    }
   }
-  // watch: {
-  //   vkey: function (val, oldVal) {
-  //     this.songUrlData = songUrl(val, this.currentSong.mid)
-  //     console.log(this.songUrlData)
-  //     this.songPlay()
-  //     // console.log(this.currentSong.mid)
-  //   },
-  //   // 检测当前播放歌曲变化
-  //   currentSong (newSong, oldSong) {
-  //     if (!newSong.id) {
-  //       // 当清空播放列表时，newSong为空，则直接跳过下面操作
-  //       return
-  //     }
-  //     if (newSong === oldSong) {
-  //       // 当currentSong播放列表因为点击播放方式改变时，不做操作
-  //       return
-  //     }
-  //     // 清除当前歌词自动跳转计时
-  //     if (this.currentLyric) {
-  //       this.currentLyric.stop()
-  //     }
-  //     this.$nextTick(() => {
-  //       this._getVkey(this.currentSong.mid)
-  //     })
-  //   },
-  //   // 检测播放状态
-  //   playing (val) {
-  //     this.$nextTick(() => {
-  //       const audio = this.$refs.audio
-  //       val ? audio.play() : audio.pause()
-  //     })
-  //   }
-  // }
 }
 </script>
 <style lang="scss" scoped>
@@ -542,12 +544,20 @@ export default {
   float: right;
   padding-top: rem(5);
   box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+}
+.playList {
+  display: flex;
 }
 .playList img {
   border-radius: 0;
   width: rem(30);
   height: rem(30);
   float: right;
+}
+.playButton {
+  display: flex;
 }
 .playButton img {
   border-radius: 0;
@@ -558,7 +568,6 @@ export default {
   width: 100%;
   background-size: 100% auto;
   position: relative;
-  transition: all 0.4s cubic-bezier(0.86, 0.18, 0.82, 1.32);
 }
 .header img {
   width: rem(30);
@@ -612,7 +621,6 @@ export default {
   line-height: rem(40);
   display: flex;
   justify-content: space-between;
-  transition: all 0.4s cubic-bezier(0.86, 0.18, 0.82, 1.32);
 }
 .bottom-button-box img {
   width: rem(33);
@@ -627,18 +635,22 @@ export default {
 .normal-enter-active,
 .normal-leave-active {
   transition: all 0.4s;
+  .header,
+  .bottom-button-box {
+    transition: all 0.4s cubic-bezier(0.86, 0.18, 0.82, 1.32);
+  }
 }
-.normal-enter {
-  opacity: 0;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
+.normal-enter,
 .normal-leave-to {
   opacity: 0;
-  top: 100%;
-  left: -150%;
+  .header {
+    transform: translate3d(0, -100px, 0);
+  }
+  .bottom-button-box {
+    transform: translate3d(0, 100px, 0);
+  }
 }
+
 /* 唱片旋转 */
 @keyframes rotate {
   0% {
