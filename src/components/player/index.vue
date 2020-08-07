@@ -52,19 +52,17 @@
         <!-- 控制按钮栏 -->
         <div class="bottom-button-box">
           <span>
-            <img v-if="mode === 2" src="./btnImg/random.png" alt />
-            <img v-if="mode === 0" src="./btnImg/sequence.png" alt />
-            <img v-if="mode === 1" src="./btnImg/loop.png" alt />
+            <img :src="playModeImg" alt @click="changeMode" />
           </span>
           <span>
-            <img src="./btnImg/prve.png" alt />
+            <img src="./btnImg/prve.png" @click="prevClick" alt />
           </span>
           <span @click="togglePlaying">
             <img v-if="playing" id="playButton" src="./playStrop.png" alt />
             <img v-if="!playing" id="playButton" src="./playButton.png" alt />
           </span>
           <span>
-            <img src="./btnImg/next.png" alt />
+            <img src="./btnImg/next.png" @click="nextClick" alt />
           </span>
           <span>
             <img src="./btnImg/collect.png" alt="收藏" />
@@ -116,7 +114,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 // import { ERR_OK } from 'api/config'
 // import progressBar from './components/progress-bar'
 // import playList from 'components/playList/playList'
-// import { playMode } from 'assets/js/config'
+import { playMode } from '@/assets/js/config'
 // import { Base64 } from 'js-base64'
 // import Lyric from 'lyric-parser'
 // import Scroll from 'base/scroll/scroll'
@@ -128,6 +126,18 @@ export default {
     // playList
   },
   computed: {
+    playModeImg () {
+      if (this.mode === playMode.SEQUENCE) {
+        return require('./btnImg/sequence.png')
+      }
+      if (this.mode === playMode.LOOP) {
+        return require('./btnImg/loop.png')
+      }
+      if (this.mode === playMode.RANDOM) {
+        return require('./btnImg/random.png')
+      }
+      return require('./btnImg/sequence.png')
+    },
     ...mapGetters([
       'fullScreen',
       'playList',
@@ -165,6 +175,7 @@ export default {
     }
   },
   created () {
+    this.playMode = playMode
     this.touch = {}
     console.log(this.playList)
   },
@@ -212,37 +223,43 @@ export default {
       this.setFullScreen(true)
     },
     /* 上一曲，下一曲 */
-    next () {
-      if (!this.songReadey) {
-        return
-      }
-      if (this.playlist.length === 1) {
-        this.songLoop()
-      } else {
-        let index = this.currentIndex + 1
-        if (index === this.playlist.length) {
-          index = 0
-        }
-        this.setCurrentIndex(index)
-        this.setPlayingState('true') // 点击下一曲后自动播放
-      }
-      this.songReadey = false
+    // next () {
+    //   if (!this.songReadey) {
+    //     return
+    //   }
+    //   if (this.playlist.length === 1) {
+    //     this.songLoop()
+    //   } else {
+    //     let index = this.currentIndex + 1
+    //     if (index === this.playlist.length) {
+    //       index = 0
+    //     }
+    //     this.setCurrentIndex(index)
+    //     this.setPlayingState('true') // 点击下一曲后自动播放
+    //   }
+    //   this.songReadey = false
+    // },
+    // prev () {
+    //   if (!this.songReadey) {
+    //     return
+    //   }
+    //   if (this.playlist.length === 1) {
+    //     this.songLoop()
+    //   } else {
+    //     let index = this.currentIndex - 1
+    //     if (index === -1) {
+    //       index = this.playlist.length - 1
+    //     }
+    //     this.setCurrentIndex(index)
+    //     this.setPlayingState('false')
+    //   }
+    //   this.songReadey = false
+    // },
+    prevClick () {
+      this.prev({ load: () => { this.$refs.audio.currentTime = 0 } })
     },
-    prev () {
-      if (!this.songReadey) {
-        return
-      }
-      if (this.playlist.length === 1) {
-        this.songLoop()
-      } else {
-        let index = this.currentIndex - 1
-        if (index === -1) {
-          index = this.playlist.length - 1
-        }
-        this.setCurrentIndex(index)
-        this.setPlayingState('false')
-      }
-      this.songReadey = false
+    nextClick () {
+      this.next({ load: () => { this.$refs.audio.currentTime = 0 } })
     },
     /* 歌曲加载成功 */
     audioReady () {
@@ -290,6 +307,12 @@ export default {
     //   this.resetCurrentIndex(list)
     //   this.setPlayList(list)
     // },
+    changeMode () {
+      const modeList = Object.keys(playMode)
+      const nextModeIndex = (modeList.indexOf(this.mode) + 1) % modeList.length
+      const nextMode = modeList[nextModeIndex]
+      this.setPlayMode(nextMode)
+    },
     // resetCurrentIndex (list) {
     //   const index = list.findIndex((item) => {
     //     return item.id === this.currentSong.id
@@ -419,6 +442,8 @@ export default {
       setPlayList: 'SET_PLAYLIST'
     }),
     ...mapActions([
+      'prev',
+      'next',
       'savePlayHistory',
       'saveFavoriteList',
       'deleteFavoriteList'

@@ -30,7 +30,11 @@ export default class Song {
   }
 }
 
-export function createSong (musicData) { // 是对歌手详情页数据的封装处理
+export function createSong (musicData, index) { // 是对歌手详情页数据的封装处理
+  let url = ''
+  if (index === 0) url = 'https://isure.stream.qqmusic.qq.com/C400000Z8FqM0Smg6G.m4a?guid=7842965224&vkey=40FECE8A112A6701637AA6D8FA6363EA6AE9E9BD1E80EA7BB04FC9960F5D83BCE08E7EB1A4DFDF202F366AF68A1DBC3E4ABBF91DECB61F49&uin=0&fromtag=66'
+  if (index === 1) url = 'https://isure.stream.qqmusic.qq.com/C400002WJzLf25Tsgd.m4a?guid=7842965224&vkey=C71601C66F491D836C93BF448CAFD75FE6F9F161E33403B1F11DF09F1AAD9B1C556477F266C771FAD1D9C1B4D0CDA277AAF80E5DD3673917&uin=0&fromtag=66'
+  if (index === 2) url = 'https://isure.stream.qqmusic.qq.com/C400002r03ci2ubtmn.m4a?guid=7842965224&vkey=F6CC7D70F5C1BDA2A87F3389A538C8CD1155226BC525F335E1D2231C9E2F5C002991097F35A39664C859A549ADEDBE788A5A652FAFF3FDBC&uin=0&fromtag=66'
   return new Song({
     id: musicData.songid,
     mid: musicData.songmid,
@@ -41,7 +45,7 @@ export function createSong (musicData) { // 是对歌手详情页数据的封装
     image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
     // url: `http://ws.stream.qqmusic.qq.com/${musicData.songid}.m4a?fromtag=46`
     // url: `http://dl.stream.qqmusic.qq.com/C400${musicData.songmid}.m4a?vkey=&guid=1472133172&uin=0&fromtag=66`
-    url: 'https://isure.stream.qqmusic.qq.com/C400002r03ci2ubtmn.m4a?guid=7842965224&vkey=766A13AC8E79BA190F6675411FC827D65F740B13C0E7073B5C3D3391C1D02DEC5213CE8BD57D8C7DDCAA7357CA4CF9C4CF907CDA8A72DE5B&uin=0&fromtag=66'
+    url
   })
 }
 

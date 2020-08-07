@@ -51,11 +51,11 @@ export default {
     },
     _normalizeSongs (list) {
       const ret = []
-      list.forEach(item => {
+      list.splice(0, 3).forEach((item, index) => {
         const { musicData } = item
         if (musicData.songid && musicData.albummid) {
           // 必须有id和连接码
-          ret.push(createSong(musicData))
+          ret.push(createSong(musicData, index))
         }
       })
       return ret
