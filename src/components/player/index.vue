@@ -42,13 +42,14 @@
           <span class="dot" :class="{'active':currentShow==='lyric'}"></span>
         </div>-->
         <!-- 播放进度条 -->
-        <!-- <div class="time-box">
+        <div class="time-box">
           <div class="time">
             <span class="time-l">{{ format(currentTime) }}</span>
-            <progressBar style="overflow:hidden" :percent="percent" @percentChange="percentChange"></progressBar>
+            <!-- :percent="percent" @percentChange="percentChange" -->
+            <progressBar style="overflow:hidden"></progressBar>
             <span class="time-r">{{ format(currentSong.duration) }}</span>
           </div>
-        </div>-->
+        </div>
         <!-- 控制按钮栏 -->
         <div class="bottom-button-box">
           <span>
@@ -72,9 +73,8 @@
         <!-- 音乐播放器 -->
         <!-- @canplay="audioReady"
           @error="audioError"
-          @timeupdate="timeUpdate"
         @ended="songEnd"-->
-        <audio ref="audio" :src="currentSong.url" />
+        <audio ref="audio" :src="currentSong.url" @canplay="canplay" @error="audioError" @timeupdate="timeUpdate" @ended='ended'/>
       </div>
     </transition>
 
@@ -112,7 +112,7 @@ import { mapGetters, mapMutations, mapActions } from 'vuex'
 // import { shuffle } from 'assets/js/util'
 // import { getVkey, getLyric } from 'api/song'
 // import { ERR_OK } from 'api/config'
-// import progressBar from './components/progress-bar'
+import progressBar from './components/progress-bar'
 // import playList from 'components/playList/playList'
 import { playMode } from '@/assets/js/config'
 // import { Base64 } from 'js-base64'
@@ -121,7 +121,7 @@ import { playMode } from '@/assets/js/config'
 
 export default {
   components: {
-    // progressBar,
+    progressBar
     // Scroll,
     // playList
   },
@@ -147,11 +147,9 @@ export default {
       'currentIndex',
       'mode',
       'sequenceList',
+      'currentTime',
       'favoriteList' // 收藏
     ]),
-    percent () {
-      return this.currentTime / this.currentSong.duration
-    },
     playImg () {
       const class1 = this.playing ? 'playSrart' : 'playStorp'
       const class2 = this.currentShow === 'lyric' ? 'playImg' : ''
@@ -167,7 +165,6 @@ export default {
       songUrlData: '',
       vkeyData: '',
       songReadey: false, // 能否跳转下一曲
-      currentTime: '',
       currentLyric: null, // 封装后的歌词对象
       currentShow: 'cd', // 轮播图底部导航
       currentLineNum: 0, // 当前下显示歌词行数
@@ -213,7 +210,6 @@ export default {
       // if (this.currentLyric) {
       //   this.currentLyric.togglePlay()
       // }
-      console.log(this.playing, !this.playing)
       this.setPlayingState(!this.playing)
     },
     toDown () {
@@ -222,58 +218,31 @@ export default {
     toUp () {
       this.setFullScreen(true)
     },
-    /* 上一曲，下一曲 */
-    // next () {
-    //   if (!this.songReadey) {
-    //     return
-    //   }
-    //   if (this.playlist.length === 1) {
-    //     this.songLoop()
-    //   } else {
-    //     let index = this.currentIndex + 1
-    //     if (index === this.playlist.length) {
-    //       index = 0
-    //     }
-    //     this.setCurrentIndex(index)
-    //     this.setPlayingState('true') // 点击下一曲后自动播放
-    //   }
-    //   this.songReadey = false
-    // },
-    // prev () {
-    //   if (!this.songReadey) {
-    //     return
-    //   }
-    //   if (this.playlist.length === 1) {
-    //     this.songLoop()
-    //   } else {
-    //     let index = this.currentIndex - 1
-    //     if (index === -1) {
-    //       index = this.playlist.length - 1
-    //     }
-    //     this.setCurrentIndex(index)
-    //     this.setPlayingState('false')
-    //   }
-    //   this.songReadey = false
-    // },
+
     prevClick () {
-      this.prev({ load: () => { this.$refs.audio.currentTime = 0 } })
+      this.prev({
+        load: () => {
+          this.$refs.audio.currentTime = 0
+        }
+      })
     },
     nextClick () {
-      this.next({ load: () => { this.$refs.audio.currentTime = 0 } })
+      this.next({
+        load: () => {
+          this.$refs.audio.currentTime = 0
+        }
+      })
     },
-    /* 歌曲加载成功 */
-    audioReady () {
-      this.songReadey = true // 当前歌曲还未加载完成时禁止跳转其他歌曲
-      this.savePlayHistory(this.currentSong) // 播放歌曲存入本地播放记录
+    canplay () {
+      this.setSongPlayState(true)
     },
     audioError () {
       console.log('当前歌曲加载失败，请尝试其他歌曲')
-      this.songReadey = true // 歌曲加载失败是不会阻塞其他歌曲播放
+      this.setSongPlayState(true)
     },
     /* 音频播放时间更新 */
     timeUpdate (e) {
-      this.currentTime = e.target.currentTime
-      // console.log(this.currentTime)
+      this.setCurrentTime(e.target.currentTime)
     },
     /* 歌曲进度条触摸后改变歌曲播放进度 */
     percentChange (precent) {
@@ -320,13 +289,9 @@ export default {
     //   this.setCurrentIndex(index)
     // },
     // /* 歌曲播放完毕 */
-    // songEnd () {
-    //   if (this.mode === playMode.loop) {
-    //     this.songLoop()
-    //   } else {
-    //     this.next()
-    //   }
-    // },
+    ended () {
+      this.nextClick()
+    },
     // /* 单曲循环播放调会播放初始 */
     // songLoop () {
     //   // 单曲循环播放结束歌词回到初始位置
@@ -439,7 +404,9 @@ export default {
       setCurrentIndex: 'SET_CURRENT_INDEX', // 设置索引，引起当前播放歌曲变化
       setVkey: 'SET_VKEY',
       setPlayMode: 'SET_PLAY_MODE',
-      setPlayList: 'SET_PLAYLIST'
+      setPlayList: 'SET_PLAYLIST',
+      setSongPlayState: 'SET_SONG_PLAY_STATE',
+      setCurrentTime: 'SET_CURRENT_TIME'
     }),
     ...mapActions([
       'prev',
@@ -471,7 +438,10 @@ export default {
       //   this.currentLyric.stop()
       // }
       this.$nextTick(() => {
+        // 设置播放状态
         this.setPlayingState(true)
+        // 设置歌曲允许播放
+        this.setSongPlayState(false)
         this.$refs.audio.play()
         // this._getVkey(this.currentSong.mid)
       })

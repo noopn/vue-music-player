@@ -1,14 +1,16 @@
 <template>
+  <!--
+    进度条的实现
+    跳转实现在滑动杆上绑定点击事件 计算百分比
+    按钮实现拖动播放的逻辑
+  -->
   <div class="progress-bar" ref="progressBar" @click="progressClick">
     <div class="bar-inner">
       <div class="progress" ref="progress"></div>
-      <div
-        class="progress-btn-wrapper"
-        ref="progressBtn"
-        @touchstart.prevent="progressTouchStart"
+      <!-- @touchstart.prevent="progressTouchStart"
         @touchmove.prevent="progressTouchMove"
-        @touchend="progressTouchEnd"
-      >
+      @touchend="progressTouchEnd"-->
+      <div class="progress-btn-wrapper" ref="progressBtn">
         <div class="progress-btn" ref="progressBtn"></div>
       </div>
     </div>
@@ -16,6 +18,7 @@
 </template>
 
 <script type="text/ecmascript-6">
+import { mapGetters } from 'vuex'
 // import { prefixStyle } from "common/js/dom";
 
 // const transform = prefixStyle("transform");
@@ -29,11 +32,16 @@ export default {
   },
   data () {
     return {
-      progressBtnWidth: ''
+      progressBtnWidth: '',
+      btnTranslate: 0
     }
   },
   created () {
     this.touch = {}
+    console.log(this.currentTime, this.currentSong)
+  },
+  computed: {
+    ...mapGetters(['currentTime', 'currentSong'])
   },
   methods: {
     progressTouchStart (e) {
@@ -78,13 +86,14 @@ export default {
     }
   },
   watch: {
-    percent (newPercent) {
-      if (newPercent >= 0 && !this.touch.initiated) {
+    currentTime (newCurrentTime) {
+      const progress = newCurrentTime / this.currentSong.duration
+      if (progress >= 0 && !this.touch.initiated) {
         // 拖动时不能自动跳动
         this.progressBtnWidth = this.$refs.progressBtn.clientWidth / 2 // 按钮宽度
         const barWidth =
           this.$refs.progressBar.clientWidth - this.progressBtnWidth // 总宽-按钮宽度
-        const offsetWidth = newPercent * barWidth
+        const offsetWidth = progress * barWidth
         this._offset(offsetWidth)
       }
     }
@@ -92,8 +101,8 @@ export default {
 }
 </script>
 
-<style scoped lang="scss" rel="stylesheet/stylus">
-@import "assets/css/mixin.scss";
+<style scoped lang="scss">
+@import "@/assets/css/mixin.scss";
 .progress-bar {
   // width: rem(200);
   width: 100%;

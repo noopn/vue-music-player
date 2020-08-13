@@ -10,13 +10,15 @@ const actions = {
     const {
       mode,
       playList,
-      currentIndex
+      currentIndex,
+      songReady
     } = state
-    console.log(load)
+
+    if (songReady === false) return false
+
     if (mode === playMode.SEQUENCE) {
       const prevIndex = currentIndex > 0 ? currentIndex - 1 : playList.length - 1
       commit(types.SET_PLAY_INDEX, prevIndex)
-      return
     }
     if (mode === playMode.LOOP) {
       load()
@@ -29,17 +31,19 @@ const actions = {
   next ({
     commit,
     state
-  }, load) {
+  }, { load }) {
     const {
       mode,
       playList,
-      currentIndex
+      currentIndex,
+      songReady
     } = state
+
+    if (songReady === false) return false
 
     if (mode === playMode.SEQUENCE) {
       const prevIndex = currentIndex === playList.length - 1 ? 0 : currentIndex + 1
       commit(types.SET_PLAY_INDEX, prevIndex)
-      return
     }
     if (mode === playMode.LOOP) {
       load()
